@@ -17,7 +17,7 @@ export default async () => {
         // Haetaan Suomen maajoukkueen ottelut kaudelta 2024.
         const url = new URL("https://v3.football.api-sports.io/fixtures");
         url.searchParams.set("team", "1771");
-        url.searchParams.set("season", "2024");
+        url.searchParams.set("season", "2025");
 
         const response = await fetch(url, {
             headers: {
