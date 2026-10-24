@@ -1,0 +1,55 @@
+
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Helmarit | Ottelut ja tulokset</title>
+
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <p class="eyebrow">SUOMEN NAISTEN A-MAAJOUKKUE</p>
+            <h1>HELMARIT</h1>
+            <p class="subtitle">Ottelut ja tulokset</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="intro">
+            <h2>Ottelukeskus</h2>
+            <p>Seuraa Helmareiden otteluita ja tuloksia yhdestä paikasta.</p>
+        </section>
+
+        <section class="matches">
+            <div class="section-heading">
+                <h2>Ottelut</h2>
+
+                <div class="filters">
+                    <button id="upcoming-button" class="filter-button active">
+                        Tulevat
+                    </button>
+                    <button id="finished-button" class="filter-button">
+                        Pelatut
+                    </button>
+                </div>
+            </div>
+
+            <p id="status-message" role="status">
+                Otteluita ladataan...
+            </p>
+
+            <div id="matches-list" class="matches-list"></div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Helmarit – ottelut ja tulokset</p>
+        <p>Ottelutiedot: API-Football</p>
+    </footer>
+</body>
+</html>
