@@ -1,0 +1,176 @@
+
+/* Perusasetukset koko sivustolle */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f3f6fa;
+    color: #17243a;
+    line-height: 1.6;
+}
+
+.container {
+    width: min(100% - 32px, 1000px);
+    margin: 0 auto;
+}
+
+/* Sivuston yläosa */
+.header {
+    background: linear-gradient(135deg, #102c54, #164b86);
+    color: white;
+    padding: 56px 0;
+    border-bottom: 5px solid #ffffff;
+}
+
+.eyebrow {
+    color: #c6dcf7;
+    font-size: 0.8rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.header h1 {
+    font-size: clamp(2.8rem, 8vw, 5rem);
+    line-height: 1.1;
+    margin: 12px 0;
+    letter-spacing: 3px;
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    color: #e0ecfb;
+}
+
+/* Esittelyosio */
+.intro {
+    padding: 36px 0 28px;
+}
+
+.intro h2,
+.section-heading h2 {
+    font-size: 1.7rem;
+    margin-bottom: 8px;
+}
+
+.intro p {
+    color: #52627a;
+}
+
+/* Otteluiden otsikko ja suodattimet */
+.matches {
+    background: white;
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 48px;
+    box-shadow: 0 5px 24px rgba(20, 45, 80, 0.07);
+}
+
+.section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.filters {
+    display: flex;
+    gap: 8px;
+}
+
+.filter-button {
+    border: 1px solid #d5deea;
+    border-radius: 8px;
+    padding: 10px 16px;
+    background: white;
+    color: #19375d;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.filter-button:hover {
+    background: #edf4fc;
+}
+
+.filter-button.active {
+    background: #164b86;
+    color: white;
+    border-color: #164b86;
+}
+
+/* JavaScriptin lisäämät ottelukortit */
+.matches-list {
+    display: grid;
+    gap: 14px;
+}
+
+.match-card {
+    border: 1px solid #e0e7f0;
+    border-radius: 10px;
+    padding: 18px;
+    display: grid;
+    gap: 10px;
+}
+
+.match-date {
+    color: #61718a;
+    font-size: 0.9rem;
+}
+
+.match-teams {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    font-weight: bold;
+}
+
+.match-score {
+    white-space: nowrap;
+    color: #164b86;
+    font-size: 1.1rem;
+}
+
+.match-status {
+    color: #61718a;
+    font-size: 0.85rem;
+}
+
+#status-message {
+    color: #52627a;
+    margin-bottom: 16px;
+}
+
+/* Sivuston alaosa */
+footer {
+    text-align: center;
+    background: #102c54;
+    color: #d9e6f7;
+    padding: 24px 16px;
+    font-size: 0.9rem;
+}
+
+/* Pienet näytöt */
+@media (max-width: 600px) {
+    .header {
+        padding: 40px 0;
+    }
+
+    .matches {
+        padding: 16px;
+    }
+
+    .section-heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .match-teams {
+        flex-wrap: wrap;
+    }
+}
