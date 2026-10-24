@@ -10,26 +10,8 @@ const finishedButton = document.querySelector("#finished-button");
 // Valitaan aluksi tulevat ottelut
 let selectedFilter = "upcoming";
 
-// Väliaikainen testidata käyttöliittymän testaamiseen.
-// Korvataan tämä myöhemmin API:sta haettavilla tiedoilla.
-const matches = [
-    {
-        date: "2026-11-01T16:00:00",
-        homeTeam: "Suomi",
-        awayTeam: "Vastustaja",
-        homeScore: null,
-        awayScore: null,
-        status: "Tuleva ottelu"
-    },
-    {
-        date: "2026-10-01T18:00:00",
-        homeTeam: "Suomi",
-        awayTeam: "Vastustaja",
-        homeScore: 2,
-        awayScore: 1,
-        status: "Päättynyt"
-    }
-];
+// Tähän tallennetaan API:sta haetut ottelut
+let matches = [];
 
 // Muotoillaan päivämäärä suomenkieliseen muotoon
 function formatDate(dateString) {
@@ -39,6 +21,46 @@ function formatDate(dateString) {
         dateStyle: "medium",
         timeStyle: "short"
     }).format(date);
+}
+
+// Haetaan ottelut Netlify-funktion kautta
+async function loadMatches() {
+    statusMessage.textContent = "Ladataan otteluita...";
+    matchesList.replaceChildren();
+
+    try {
+        const response = await fetch("/.netlify/functions/fixtures");
+
+        if (!response.ok) {
+            throw new Error("Otteluiden hakeminen epäonnistui.");
+        }
+
+        const data = await response.json();
+
+        if (data.errors && Object.keys(data.errors).length > 0) {
+            throw new Error("Ottelutietojen API-haku epäonnistui.");
+        }
+
+        // Muutetaan API:n tiedot sivuston käyttämään muotoon
+        matches = (data.response || []).map((item) => ({
+            date: item.fixture.date,
+            homeTeam: item.teams.home.name,
+            awayTeam: item.teams.away.name,
+            homeScore: item.goals.home,
+            awayScore: item.goals.away,
+            status: item.fixture.status.long,
+            statusCode: item.fixture.status.short
+        }));
+
+        // Uusimmat ottelut ensin
+        matches.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        renderMatches();
+    } catch (error) {
+        console.error("Otteluiden lataaminen epäonnistui:", error);
+        statusMessage.textContent =
+            "Otteluiden lataaminen epäonnistui. Yritä myöhemmin uudelleen.";
+    }
 }
 
 // Näytetään ottelut valitun suodattimen perusteella
@@ -51,22 +73,30 @@ function renderMatches() {
         const matchDate = new Date(match.date);
 
         if (selectedFilter === "upcoming") {
-            return matchDate > now && match.homeScore === null;
+            return matchDate > now &&
+                match.homeScore === null &&
+                match.awayScore === null;
         }
 
-        return match.homeScore !== null;
+        return match.homeScore !== null &&
+            match.awayScore !== null;
     });
 
-    // Kerrotaan käyttäjälle, jos otteluita ei löydy
     if (filteredMatches.length === 0) {
-        statusMessage.textContent = "Tässä näkymässä ei ole otteluita.";
+        if (selectedFilter === "upcoming") {
+            statusMessage.textContent =
+                "Tulevia otteluita ei löytynyt API:n palauttamista tiedoista.";
+        } else {
+            statusMessage.textContent =
+                "Päättyneitä otteluita ei löytynyt.";
+        }
+
         return;
     }
 
     statusMessage.textContent = `Otteluita: ${filteredMatches.length}`;
 
     filteredMatches.forEach((match) => {
-        // Luodaan kortti jokaiselle ottelulle
         const card = document.createElement("article");
         card.classList.add("match-card");
 
@@ -78,15 +108,17 @@ function renderMatches() {
         teams.classList.add("match-teams");
 
         const teamNames = document.createElement("span");
-        teamNames.textContent = `${match.homeTeam} – ${match.awayTeam}`;
+        teamNames.textContent =
+            `${match.homeTeam} – ${match.awayTeam}`;
 
         const score = document.createElement("span");
         score.classList.add("match-score");
 
-        if (match.homeScore === null) {
+        if (match.homeScore === null || match.awayScore === null) {
             score.textContent = "VS";
         } else {
-            score.textContent = `${match.homeScore} – ${match.awayScore}`;
+            score.textContent =
+                `${match.homeScore} – ${match.awayScore}`;
         }
 
         const status = document.createElement("p");
@@ -99,7 +131,7 @@ function renderMatches() {
     });
 }
 
-// Vaihdetaan näkymää painikkeesta
+// Tulevat ottelut -painike
 upcomingButton.addEventListener("click", () => {
     selectedFilter = "upcoming";
 
@@ -109,6 +141,7 @@ upcomingButton.addEventListener("click", () => {
     renderMatches();
 });
 
+// Päättyneet ottelut -painike
 finishedButton.addEventListener("click", () => {
     selectedFilter = "finished";
 
@@ -118,5 +151,5 @@ finishedButton.addEventListener("click", () => {
     renderMatches();
 });
 
-// Näytetään ottelut heti sivun latautuessa
-renderMatches();
+// Haetaan oikeat ottelut sivun latautuessa
+loadMatches();
